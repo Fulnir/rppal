@@ -315,6 +315,7 @@ fn parse_base_model() -> Result<Model> {
         "Raspberry Pi Zero W" => Model::RaspberryPiZeroW,
         "Raspberry Pi Zero 2" => Model::RaspberryPiZero2W,
         "Raspberry Pi Zero 2 W" => Model::RaspberryPiZero2W,
+        "Raspberry Pi Zero 2 W Rev 1.0" => Model::RaspberryPiZero2W,
         "Raspberry Pi 3 Model B+" => Model::RaspberryPi3BPlus,
         "Raspberry Pi 3 Model B Plus" => Model::RaspberryPi3BPlus,
         "Raspberry Pi 3 Model A Plus" => Model::RaspberryPi3APlus,
