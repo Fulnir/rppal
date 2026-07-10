@@ -162,6 +162,7 @@ impl fmt::Display for SoC {
 
 // Identify Pi model based on /proc/cpuinfo
 fn parse_proc_cpuinfo() -> Result<Model> {
+    println!("Parse Raspberry model cpu compatible");
     let proc_cpuinfo = BufReader::new(match File::open("/proc/cpuinfo") {
         Ok(file) => file,
         Err(_) => return Err(Error::UnknownModel),
@@ -187,13 +188,13 @@ fn parse_proc_cpuinfo() -> Result<Model> {
         }
     } else if revision.len() >= 6 {
         // Newer revisions consist of at least 6 characters
-
+        println!("Revison len >= 6");
         // Compare just the type value for compatibility with future revisions
         let revision_type = match u64::from_str_radix(&revision, 16) {
             Ok(revision_type) => (revision_type >> 4) & 0xff,
             Err(_) => return Err(Error::UnknownModel),
         };
-
+        println!("Check revision type {}", revision_type);
         match revision_type {
             0x00 => Model::RaspberryPiA,
             0x01 => Model::RaspberryPiBRev2,
@@ -228,6 +229,7 @@ fn parse_proc_cpuinfo() -> Result<Model> {
 
 // Identify Pi model based on /sys/firmware/devicetree/base/compatible
 fn parse_base_compatible() -> Result<Model> {
+    println!("Parse Raspberry model base compatible");
     let base_compatible = match fs::read_to_string("/sys/firmware/devicetree/base/compatible") {
         Ok(buffer) => buffer,
         Err(_) => return Err(Error::UnknownModel),
