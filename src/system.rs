@@ -162,7 +162,6 @@ impl fmt::Display for SoC {
 
 // Identify Pi model based on /proc/cpuinfo
 fn parse_proc_cpuinfo() -> Result<Model> {
-    println!("Parse Raspberry model cpu compatible");
     let proc_cpuinfo = BufReader::new(match File::open("/proc/cpuinfo") {
         Ok(file) => file,
         Err(_) => return Err(Error::UnknownModel),
@@ -188,7 +187,6 @@ fn parse_proc_cpuinfo() -> Result<Model> {
         }
     } else if revision.len() >= 6 {
         // Newer revisions consist of at least 6 characters
-        println!("Revison len >= 6");
         // Compare just the type value for compatibility with future revisions
         let revision_type = match u64::from_str_radix(&revision, 16) {
             Ok(revision_type) => (revision_type >> 4) & 0xff,
@@ -223,13 +221,11 @@ fn parse_proc_cpuinfo() -> Result<Model> {
     } else {
         return Err(Error::UnknownModel);
     };
-    let model = Model::RaspberryPiZero2W;
     Ok(model)
 }
 
 // Identify Pi model based on /sys/firmware/devicetree/base/compatible
 fn parse_base_compatible() -> Result<Model> {
-    println!("Parse Raspberry model base compatible");
     let base_compatible = match fs::read_to_string("/sys/firmware/devicetree/base/compatible") {
         Ok(buffer) => buffer,
         Err(_) => return Err(Error::UnknownModel),
@@ -273,7 +269,6 @@ fn parse_base_compatible() -> Result<Model> {
 
 // Identify Pi model based on /sys/firmware/devicetree/base/model
 fn parse_base_model() -> Result<Model> {
-    println!("Parse Raspberry model");
     let mut base_model = match fs::read_to_string("/sys/firmware/devicetree/base/model") {
         Ok(mut buffer) => {
             if let Some(idx) = buffer.find('\0') {
@@ -284,7 +279,6 @@ fn parse_base_model() -> Result<Model> {
         }
         Err(_) => return Err(Error::UnknownModel),
     };
-    println!("Parse Raspberry model {}", base_model);
     // Check if this is a Pi B rev 2 before we remove the revision part, assuming the
     // PCB Revision numbers on https://elinux.org/RPi_HardwareHistory are correct, and
     // the installed distro appends the revision to the model name.
@@ -298,7 +292,6 @@ fn parse_base_model() -> Result<Model> {
     if let Some(idx) = base_model.find(" Rev ") {
         base_model.truncate(idx);
     }
-    println!("Parse Raspberry model (truncated) {}", base_model);
     // Based on /arch/arm/boot/dts/ and /Documentation/devicetree/bindings/arm/bcm/
     let model = match &base_model[..] {
         "Raspberry Pi Model B (no P5)" => Model::RaspberryPiBRev1,
@@ -363,7 +356,7 @@ impl DeviceInfo {
     /// and `/sys/firmware/devicetree/base/model`.
     pub fn new() -> Result<DeviceInfo> {
         // Parse order from most-detailed to least-detailed info
-        let model = parse_base_modelparse_proc_cpuinfo()
+        let model = parse_proc_cpuinfo()
             .or_else(|_| parse_base_compatible().or_else(|_| parse_base_model()))?;
         let model = Model::RaspberryPiZero2W;
         // Set SoC and memory offsets based on model
