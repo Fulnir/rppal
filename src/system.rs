@@ -328,9 +328,9 @@ fn parse_base_model() -> Result<Model> {
         "Raspberry Pi Compute Module 5" => Model::RaspberryPiComputeModule5,
         "Raspberry Pi Compute Module 5 Lite" => Model::RaspberryPiComputeModule5Lite,
         "Raspberry Pi 500" => Model::RaspberryPi500,
-        _ => return Err(Error::RaspberryPiZero2W), // UnknownModel
+        _ => return Err(Error::UnknownModel), // UnknownModel
     };
-
+    let model = Model::RaspberryPiZero2W;
     Ok(model)
 }
 
