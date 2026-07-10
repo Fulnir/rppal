@@ -223,7 +223,7 @@ fn parse_proc_cpuinfo() -> Result<Model> {
     } else {
         return Err(Error::UnknownModel);
     };
-
+    let model = Model::RaspberryPiZero2W;
     Ok(model)
 }
 
