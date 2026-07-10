@@ -363,7 +363,7 @@ impl DeviceInfo {
     /// and `/sys/firmware/devicetree/base/model`.
     pub fn new() -> Result<DeviceInfo> {
         // Parse order from most-detailed to least-detailed info
-        let model = parse_proc_cpuinfo()
+        let model = parse_base_modelparse_proc_cpuinfo()
             .or_else(|_| parse_base_compatible().or_else(|_| parse_base_model()))?;
         let model = Model::RaspberryPiZero2W;
         // Set SoC and memory offsets based on model
