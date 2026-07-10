@@ -363,8 +363,8 @@ impl DeviceInfo {
     /// and `/sys/firmware/devicetree/base/model`.
     pub fn new() -> Result<DeviceInfo> {
         // Parse order from most-detailed to least-detailed info
-        let model = parse_base_model()?
-            .or_else(|_| parse_base_compatible().or_else(|_| parse_proc_cpuinfo()));
+        let model = parse_base_model()
+            .or_else(|_| parse_base_compatible().or_else(|_| parse_proc_cpuinfo()))?;
 
         // Set SoC and memory offsets based on model
         match model {
